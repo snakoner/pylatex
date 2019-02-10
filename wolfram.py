@@ -4,7 +4,6 @@ import random
 import re
 from pylatex import Document, StartTex, makeTex, makePdf
 
-appId = 'ER4JAQ-UYALREV432'
 
 def get_picture(result):
 	for res in result:
@@ -14,8 +13,7 @@ def get_picture(result):
 		f.write(requests.get(res).content)
 		f.close()
 	pass
-
-def prepareForTex(result):
+def prepareDefIntForTex(result):
 	result = re.split('\'plaintext\':', str(result))[-1]
 	result = result[2:-2]
 	print(result)
@@ -35,31 +33,31 @@ def prepareForTex(result):
 	final_string = re.sub('≈', '=', final_string)
 	print(final_string)
 	return final_string
-
+def prepareIndefIntForTex(result):
+	result = re.split('\'plaintext\':', str(result))[-1]
+	result = result[2:-2]
+	lines = re.split('=', result)
+	result = re.split(' ',lines[0])
+	final_string = '$$\int_{'+'}^{'+'}' + result[1] + ' ' + result[2] + ' = '
+	final_string += lines[1] + '$$'
+	final_string = re.sub('constant', 'C', final_string)
+	return final_string
 def addIntToFile(result):
 	with open('integrals.txt', 'a') as f:
 		f.write(result + '\n')
 	pass
-
 def getIntTex(result):
 	return result['plaintext']
-def parseData(res, intType):
+def parseData(res):
 	answer = []	
 	for pod in res.pods:
 		for sub in pod.subpods:
 			answer.append(sub)
-	return answer[0] if intType else answer[2]
-def getDataFromWolframAlpha():
-	client = wolframalpha.Client()
-	res = client.query('int logx from 0 to 1')
-	return res
-
+	return answer[0]
 def makeRequest(request, appId):
 	client = setConnection(appId)
 	result = client.query(request)
 	return result
-
-
 def setConnection(appId):
 	client = wolframalpha.Client(appId)
 	return client

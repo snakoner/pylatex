@@ -6,7 +6,7 @@
 import os
 
 class Document(object):
-    def __init__(self, path = '', filename = 'document.tex', document_data = [], mode = ['math'], lang = ['english','russian']):
+    def __init__(self, path = '', filename = 'integrals.tex', document_data = [], mode = ['math'], lang = ['english','russian']):
         self.path = path
         self.filename = filename
         self.document_data = document_data
@@ -32,7 +32,7 @@ class Document(object):
         #making \begin
         preamble_data.append('\\begin{document}\n')
         dont_fill = False
-        if os.path.isfile('document.txt')==False:
+        if os.path.isfile('integrals.tex')==False:
             open(self.filename, 'a').close()
         print(preamble_data)
         with open(self.filename, 'r+') as f:
@@ -95,26 +95,24 @@ class Document(object):
         pass
 
 
-def StartTex(filename = 'document.tex', path = '', mode = ['math'], lang = ['english', 'russian'], date = True, title = None, author = None):
+def StartTex(filename = 'integrals.tex', path = '', mode = ['math'], lang = ['english', 'russian'], date = True, title = None, author = None):
     document = Document(path, filename, [], mode, lang)
     document.preamble()
     return document
-
-
-
 def makeTex():
         #remove old tex file
         try:
             import os
         except ImportError:
             print('No module \'os\' found. Please, make pip install os.')
-        if os.path.isfile('document.tex'):
-                os.system('rm ' + 'document.tex')
+        if os.path.isfile('integrals.tex'):
+                os.system('rm ' + 'integrals.tex')
         #reading all the integrals from txt file
         integrals = []
         with open('integrals.txt', 'r+') as f:
             for line in f:
                 integrals.append(line+'\n')
+        integrals = list(set(integrals))   
         #creating new tex file
         document = StartTex()
         with open(document.filename, 'a') as f:
@@ -124,6 +122,6 @@ def makeTex():
         pass
 
 def makePdf():
-    os.system('pdflatex ' + 'document.tex')
+    os.system('pdflatex ' + 'integrals.tex')
 
 
